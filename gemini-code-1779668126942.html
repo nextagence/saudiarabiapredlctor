@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متنبئ الذكاء الاصطناعي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Cairo", sans-serif;
+            background-color: #000;
+            color: #4ade80;
+            text-shadow: 0 0 3px rgba(57, 255, 20, 0.4);
+            overflow: hidden;
+        }
+        .cursor::after {
+            content: "_";
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .hacker-input:focus {
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+        }
+        .blinking-red {
+            color: #ef4444;
+            animation: blink-red 1.5s step-end infinite;
+        }
+        @keyframes blink-red { 50% { opacity: 0.5; } }
+        .shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-content" class="min-h-screen flex flex-col items-center justify-center p-4">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-5xl tracking-widest cursor-default">
+                <span id="typing-text">متنبئ الذكاء الاصطناعي</span><span class="cursor"></span>
+            </h1>
+        </header>
+        <button id="openModalBtn" class="bg-transparent border-2 border-green-400 text-green-400 px-8 py-3 text-lg hover:bg-green-400 hover:text-black transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20 hover:shadow-green-500/40">
+            الحصول على إشارات الذكاء الاصطناعي
+        </button>
+    </div>
+
+    <div id="accessModal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div id="modalContainer" class="bg-[#0d0d0d] border border-green-500 rounded-lg p-6 md:p-8 w-full max-w-sm relative shadow-2xl shadow-green-500/30">
+            <button id="closeModalBtn" class="absolute top-2 left-3 text-gray-500 hover:text-green-400 text-3xl transition-colors">
+                ×
+            </button>
+            
+            <div id="formContent" class="text-center">
+                <p class="blinking-red text-sm mb-4">
+                    // 3 رموز وصول متاحة لهذا اليوم
+                </p>
+                <label for="accessCode" class="block text-xl mb-4">اكتب رمز الوصول</label>
+                <input type="text" id="accessCode" class="hacker-input w-full bg-gray-900 border border-green-600 text-green-300 rounded p-3 text-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="رمز الوصول">
+                <p id="errorMessage" class="text-red-500 h-5 mt-2 text-sm"></p>
+                <button id="validateBtn" class="mt-4 w-full bg-green-600 text-black px-6 py-2 text-lg hover:bg-green-500 transition-all duration-300 active:scale-95">
+                    تحقق
+                </button>
+            </div>
+            
+            <div id="customMessageContent" class="text-center hidden flex-col items-center justify-center space-y-4">
+                <p class="text-lg text-green-300 mb-4">[ТВОЙ_ТЕКСТ_ЗДЕСЬ]</p>
+                <a href="[ТВОЯ_ССЫЛКА_ЗДЕСЬ]" class="w-full inline-block bg-green-600 text-black px-6 py-2 text-lg hover:bg-green-500 transition-all duration-300 active:scale-95 rounded font-bold">
+                    [ТЕКСТ_КНОПКИ_ЗДЕСЬ]
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const openModalBtn = document.getElementById("openModalBtn"),
+                  accessModal = document.getElementById("accessModal"),
+                  modalContainer = document.getElementById("modalContainer"),
+                  closeModalBtn = document.getElementById("closeModalBtn"),
+                  accessCodeInput = document.getElementById("accessCode"),
+                  validateBtn = document.getElementById("validateBtn"),
+                  formContent = document.getElementById("formContent"),
+                  customMessageContent = document.getElementById("customMessageContent"),
+                  errorMessage = document.getElementById("errorMessage");
+
+            const handleValidation = () => {
+                const code = accessCodeInput.value.trim();
+
+                if (/^\d{10}$/.test(code)) {
+                    formContent.classList.add("hidden");
+                    customMessageContent.classList.remove("hidden");
+                    customMessageContent.classList.add("flex");
+                } else {
+                    errorMessage.textContent = "Неверный формат (требуется 10 цифр)";
+                    accessCodeInput.value = "";
+                    modalContainer.classList.add("shake");
+                    setTimeout(() => modalContainer.classList.remove("shake"), 500);
+                }
+            };
+
+            const openModal = () => {
+                accessModal.classList.remove("hidden");
+                setTimeout(() => accessCodeInput.focus(), 50);
+            };
+
+            const closeModal = () => {
+                accessModal.classList.add("hidden");
+                setTimeout(() => {
+                    formContent.classList.remove("hidden");
+                    customMessageContent.classList.add("hidden");
+                    customMessageContent.classList.remove("flex");
+                    errorMessage.textContent = "";
+                    accessCodeInput.value = "";
+                }, 300);
+            };
+
+            openModalBtn.addEventListener("click", openModal);
+            closeModalBtn.addEventListener("click", closeModal);
+            validateBtn.addEventListener("click", handleValidation);
+            
+            accessCodeInput.addEventListener("keyup", (e) => {
+                if (e.key === "Enter") handleValidation();
+            });
+            
+            accessModal.addEventListener("click", (e) => {
+                if (e.target === accessModal) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>
