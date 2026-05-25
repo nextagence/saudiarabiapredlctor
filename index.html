@@ -62,7 +62,7 @@
                     // 3 رموز وصول متاحة لهذا اليوم
                 </p>
                 <label for="accessCode" class="block text-xl mb-4">اكتب رمز الوصول</label>
-                <input type="text" id="accessCode" class="hacker-input w-full bg-gray-900 border border-green-600 text-green-300 rounded p-3 text-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="رمز الوصول">
+                <input type="text" id="accessCode" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="hacker-input w-full bg-gray-900 border border-green-600 text-green-300 rounded p-3 text-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="رمز الوصول">
                 <p id="errorMessage" class="text-red-500 h-5 mt-2 text-sm"></p>
                 <button id="validateBtn" class="mt-4 w-full bg-green-600 text-black px-6 py-2 text-lg hover:bg-green-500 transition-all duration-300 active:scale-95">
                     تحقق
@@ -98,7 +98,7 @@
                     customMessageContent.classList.remove("hidden");
                     customMessageContent.classList.add("flex");
                 } else {
-                    errorMessage.textContent = "Неверный формат (требуется 10 цифр)";
+                    errorMessage.textContent = "Неверный формат (требуется ровно 10 цифр)";
                     accessCodeInput.value = "";
                     modalContainer.classList.add("shake");
                     setTimeout(() => modalContainer.classList.remove("shake"), 500);
